@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>第十三章：Ajax</title>
+    <style>
+        h3 {
+            color: red;
+        }
+
+        p {
+            width: 400px;
+            height: 80px;
+            overflow: scroll;
+            background-color: rgb(224, 222, 222);
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Ajax 基礎</h3>
+    用JS異步形式去操作DOM元素(xml) <br><br>
+    <input type="button" value="點我發起Ajax請求" id="bt1">
+    <p id="text">我是響應內容</p>
+    <script>
+        document.getElementById('bt1').onclick = function () {
+            // 1.創建對象
+            var request = new XMLHttpRequest()
+
+            // 2.設置請求 參數一：什麼請求方式 參數二：請求什麼內容 參數三：同步還是異步
+            request.open('GET', 'test.json', true)
+
+            // 3.發送請求
+            request.send()
+
+            // 4.接收數據
+            request.onreadystatechange = function () {
+                if (request.readyState == 4) { // 數據響應解析完成
+                    if (request.status == 200) { // 數據獲取成功
+                        document.getElementById('text').innerText = request.response
+                    }
+                }
+            }
+        }
+    </script>
+
+    <h3>把數據渲染到頁面當中</h3>
+    利用 JSON 方法把數據轉換成 JSON 對象 <br><br>
+    <input type="button" value="點我發起Ajax請求" id="bt2">
+    <p id="text2">我是響應內容</p>
+    <script>
+        document.getElementById('bt2').onclick = function () {
+            // 1.創建對象
+            var request = new XMLHttpRequest()
+
+            // 2.設置請求 參數一：什麼請求方式 參數二：請求什麼內容 參數三：同步還是異步
+            request.open('GET', 'test.json', true)
+
+            // 3.發送請求
+            request.send()
+
+            // 4.接收數據
+            request.onreadystatechange = function () {
+                if (request.readyState == 4) { // 數據響應解析完成
+                    if (request.status == 200) { // 數據獲取成功
+                        var jsonData = JSON.parse(request.response)
+                        var people = jsonData.people
+
+                        var oUl = document.createElement('ul')
+                        for (i = 0; i < people.length; i++) {
+                            var oLi = document.createElement('li')
+                            oLi.innerHTML = people[i].firstName
+                            oUl.appendChild(oLi)
+                        }
+                        document.getElementById('text2').innerText = ''
+                        document.getElementById('text2').appendChild(oUl)
+                    }
+                }
+            }
+        }
+    </script>
+
+    <h3>封裝 Ajax</h3>
+    封裝函數 ajax_get() 傳入網址 就發送 ajax 請求 <br><br>
+    <input type="button" value="點我發起Ajax請求" id="bt3">
+    <p id="text3">我是響應內容</p>
+    <script src="./ajax.js"></script>
+    <script>
+        document.getElementById('bt3').onclick = function () {
+            ajax_get('test.json', function (response) {
+                document.getElementById('text3').innerText = response
+            })
+        }
+    </script>
+
+    <h3>GET 請求</h3>
+    //一般 GET 請求只能來傳遞參數或下載數據 <br>
+    <u style="color: forestgreen;">因它因他在瀏覽器中長度限制為1024 所以不適合用來上傳檔案</u> <br>
+    網址以'?'後的內容傳遞參數 參數與參數之間用'&'隔開<br><br>
+    <input type="button" value="點我發起Ajax請求" id="bt4">
+    <p id="text4">我是響應內容</p>
+    <script>
+        document.getElementById('bt4').onclick = function () {
+            var request = new XMLHttpRequest()
+
+            request.open('GET', 'http://bluezyz.com/study/login_get.php?user=qingbuyaodianwo&password=123321', true)
+
+            request.send()
+
+            request.onreadystatechange = function () {
+                if (request.readyState == 4) {
+                    if (request.status == 200) {
+                        document.getElementById('text4').innerText = request.response
+                    }
+                }
+            }
+        }
+    </script>
+
+    <h3>POST 請求</h3>
+    傳遞參數必須放在請求體裡面 所以在網址是看不到參數的<br><br>
+    <input type="button" value="點我發起Ajax請求" id="bt5">
+    <p id="text5">我是響應內容</p>
+    <script>
+        document.getElementById('bt5').onclick = function () {
+            var request = new XMLHttpRequest()
+
+            request.open('POST', 'http://bluezyz.com/study/login_post.php', true)
+
+            // 設置請求頭
+            request.setRequestHeader('content-type', 'application/x-www-form-urlencoded')
+            // 設置請求體 參數以字符串形式直接放在 send() 裡面
+            request.send('user=qingbuyaodianwo&password=123321')
+
+            request.onreadystatechange = function () {
+                if (request.readyState == 4) {
+                    if (request.status == 200) {
+                        document.getElementById('text5').innerText = request.response
+                    }
+                }
+            }
+        }
+    </script>
+
+    <h3>類似 JQuery 的 Ajax 封裝</h3>
+    封裝一個 ajax() 函數 裡面有四個參數<br><br>
+    <input type="button" value="點我發起Ajax請求" id="bt6">
+    <p id="text6">我是響應內容</p>
+    <script>
+        document.getElementById('bt6').onclick=function(){
+            ajax('POST','http://bluezyz.com/study/login_post.php','user=qingbuyaodianwo&password=123321',function(response){
+                document.getElementById('text6').innerText = response
+            })
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+{
+    "people": [{
+            "email": "aaaa",
+            "firstName": "Brett",
+            "lastName": "McLaughlin"
+        },
+        {
+            "email": "bbbb",
+            "firstName": "Jason",
+            "lastName": "Hunter"
+        },
+        {
+            "email": "cccc",
+            "firstName": "Elliotte",
+            "lastName": "Harold"
+        }
+    ]
+}
